@@ -4,7 +4,8 @@ $ErrorActionPreference = "Stop"
 gh auth status | Out-Null
 
 Write-Host "Creating public repo and pushing..."
-gh repo create rkhaaleed-ship-it/cgm-monitor --public --source=. --remote=origin --push --description "Flutter CGM companion app for FreeStyle Libre (NFC + BLE, AR/EN)"
+git remote set-url origin https://github.com/rkhaaleed-ship-it/CGM.git
+git push -u origin main
 
 $apk = "build\app\outputs\flutter-apk\app-release.apk"
 if (-not (Test-Path $apk)) {
@@ -21,4 +22,4 @@ if (Test-Path $apk) {
     Write-Host "APK not found — skip release or build with: flutter build apk --release"
 }
 
-Write-Host "Done: https://github.com/rkhaaleed-ship-it/cgm-monitor"
+Write-Host "Done: https://github.com/rkhaaleed-ship-it/CGM"

@@ -15,7 +15,7 @@ Companion Flutter app for continuous glucose monitoring (CGM), inspired by xDrip
 
 ### Option A — Install APK (easiest)
 
-1. Download `CGM-Monitor.apk` from [Releases](https://github.com/rkhaaleed-ship-it/cgm-monitor/releases) (or ask for the file directly).
+1. Download `CGM-Monitor.apk` from [Releases](https://github.com/rkhaaleed-ship-it/CGM/releases) (or ask for the file directly).
 2. Enable **Install from unknown sources** on Android.
 3. Install and open the app.
 4. Activate the Libre sensor with the official app first, then use **NFC** tab to scan.
@@ -23,8 +23,8 @@ Companion Flutter app for continuous glucose monitoring (CGM), inspired by xDrip
 ### Option B — Build from source
 
 ```bash
-git clone https://github.com/rkhaaleed-ship-it/cgm-monitor.git
-cd cgm-monitor
+git clone https://github.com/rkhaaleed-ship-it/CGM.git
+cd CGM
 flutter pub get
 flutter gen-l10n
 flutter run
