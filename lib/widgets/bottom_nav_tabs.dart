@@ -17,7 +17,6 @@ class BottomNavTabs extends StatelessWidget {
   static const _icons = [
     Icons.home_rounded,
     Icons.nfc_rounded,
-    Icons.settings_rounded,
   ];
 
   @override
@@ -32,7 +31,7 @@ class BottomNavTabs extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 6),
           child: Row(
-            children: List.generate(3, (i) {
+            children: List.generate(labels.length, (i) {
               final active = i == currentIndex;
               return Expanded(
                 child: Material(

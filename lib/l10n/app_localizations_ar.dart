@@ -21,10 +21,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settings => 'الإعدادات';
 
   @override
-  String get nfcReading => 'قراءة NFC';
+  String get nfcReading => 'مسح NFC';
 
   @override
-  String get tapToRead => 'اضغط للقراءة';
+  String get waitingForSensor => 'في انتظار السيسنور…';
+
+  @override
+  String get autoScanHint => 'قرّبي الموبايل — مسح تلقائي';
 
   @override
   String get searching => 'جاري البحث...';
@@ -33,11 +36,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get readSuccess => 'تمت القراءة ✓';
 
   @override
-  String get placePhoneHint =>
-      'ضع الجانب الخلفي من الموبايل\nفوق السيسنور مباشرة';
-
-  @override
-  String get libreCompat => 'Libre 1 / Libre 2 (with patch)';
+  String get placePhoneHint => 'ضع ظهر الموبايل على سيسنور Libre 2+';
 
   @override
   String get sendToHome => 'إرسال للرئيسية';
@@ -56,31 +55,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get sensorRemaining => 'متبقي للسيسنور';
-
-  @override
-  String get systemRequirements => 'متطلبات النظام:';
-
-  @override
-  String get reqAndroid => '• Android 8.0+ مع NFC مفعّل';
-
-  @override
-  String get reqIos => '• iOS 14+ مع Core NFC';
-
-  @override
-  String get reqLibre1 => '• Libre 1: قراءة مباشرة ✓';
-
-  @override
-  String get reqLibre2 => '• Libre 2: تحتاج xDrip patch ✓';
-
-  @override
-  String get reqPermission => '• امنح إذن NFC من الإعدادات';
-
-  @override
-  String get medicalWarningTitle => '⚠️ تنبيه طبي:';
-
-  @override
-  String get medicalWarningBody =>
-      'هذا التطبيق للمراقبة المساعدة فقط.\nلا تعتمد عليه لأي قرارات علاجية.\nاستشر طبيبك دائماً.';
 
   @override
   String minutesAgo(int count) {
@@ -185,10 +159,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notEnabled => 'غير مفعّل';
 
   @override
-  String get directNfc => 'NFC مباشر';
+  String get directNfc => 'NFC + BLE';
 
   @override
-  String get libre1Only => 'Libre 1 فقط';
+  String get nfcDirectSub => 'Libre 2+';
 
   @override
   String get alertLimits => 'حدود التنبيه';
@@ -332,9 +306,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get unit => 'الوحدة';
 
   @override
-  String get demoMode => 'وضع تجريبي (بدون سيسنور)';
-
-  @override
   String get scanningBle => 'جاري البحث عبر Bluetooth...';
 
   @override
@@ -343,4 +314,38 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get sensorNotActive =>
       'السيسنور غير مفعّل — فعّليه من تطبيق Libre أولاً';
+
+  @override
+  String get sensorWarmingUp =>
+      'السيسنور في فترة التسخين — انتظري ≈60 دقيقة (Libre 2+)';
+
+  @override
+  String get oop2Required => 'ثبّتي تطبيق OOP2';
+
+  @override
+  String get systemReadiness => 'فحص النظام';
+
+  @override
+  String get checkPlatformOk => 'جهاز Android جاهز';
+
+  @override
+  String get checkPlatform => 'Libre 2+ يحتاج موبايل Android';
+
+  @override
+  String get checkOop2Ok => 'OOP2 مثبت';
+
+  @override
+  String get checkOop2Missing => 'OOP2 غير مثبت — مطلوب لـ Libre 2+';
+
+  @override
+  String get checkNfcOk => 'NFC متاح';
+
+  @override
+  String get checkNfcMissing => 'NFC غير متاح — فعّليه من الإعدادات';
+
+  @override
+  String get checkBleOk => 'Bluetooth جاهز';
+
+  @override
+  String get refreshChecks => 'تحديث';
 }

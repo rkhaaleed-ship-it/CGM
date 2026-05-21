@@ -17,7 +17,7 @@ if (-not (Test-Path $apk)) {
 
 if (Test-Path $apk) {
     Write-Host "Creating release with APK..."
-    gh release create v1.0.0 $apk --title "CGM Monitor v1.0.0" --notes "Install APK on Android. Activate Libre sensor with official app first, then scan via NFC tab."
+    gh release create v1.1.0 $apk --title "CGM Monitor v1.1.0" --notes "Libre 2+ support, OOP2 bridge, auto NFC scan, simplified UI (Home + NFC). Requires OOP2 on Android."
 } else {
     Write-Host "APK not found — skip release or build with: flutter build apk --release"
 }

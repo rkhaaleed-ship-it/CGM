@@ -18,6 +18,7 @@ class HomeScreen extends StatelessWidget {
     return Consumer<CgmProvider>(
       builder: (context, cgm, _) {
         final v = cgm.currentValue;
+        final hasData = cgm.glucoseService.hasReadings;
         final stats = cgm.glucoseService.statsForHours(
           cgm.chartHours,
           low: cgm.alerts.low,
@@ -25,40 +26,49 @@ class HomeScreen extends StatelessWidget {
         );
         final slice = cgm.glucoseService.readingsForHours(cgm.chartHours);
         final predictions = cgm.glucoseService.predictValues();
-        final textColor = GlucoseColor.textColor(v);
+        final textColor = hasData ? GlucoseColor.textColor(v) : AppColors.text3;
         final delta = cgm.deltaPer5Min;
         final deltaSign = delta >= 0 ? '+' : '';
         final compact = MediaQuery.sizeOf(context).height < 700;
 
         String predText;
         Color predColor;
-        final slope = cgm.glucoseService.calculateSlope();
-        if (v < cgm.alerts.low + 10 && slope < -0.5) {
-          final mins = ((v - cgm.alerts.critLow) / slope.abs() * 5).abs().round().clamp(5, 120);
-          predText = l10n.expectedDropIn(mins);
-          predColor = AppColors.yellow;
-        } else if (v > cgm.alerts.high - 10 && slope > 0.5) {
-          final mins = ((cgm.alerts.critHigh - v) / slope * 5).round().clamp(5, 120);
-          predText = l10n.expectedRiseIn(mins);
-          predColor = AppColors.amber;
+        if (!hasData) {
+          predText = l10n.autoScanHint;
+          predColor = AppColors.text3;
         } else {
-          predText = l10n.inTargetRange;
-          predColor = AppColors.green2;
+          final slope = cgm.glucoseService.calculateSlope();
+          if (v < cgm.alerts.low + 10 && slope < -0.5) {
+            final mins = ((v - cgm.alerts.critLow) / slope.abs() * 5).abs().round().clamp(5, 120);
+            predText = l10n.expectedDropIn(mins);
+            predColor = AppColors.yellow;
+          } else if (v > cgm.alerts.high - 10 && slope > 0.5) {
+            final mins = ((cgm.alerts.critHigh - v) / slope * 5).round().clamp(5, 120);
+            predText = l10n.expectedRiseIn(mins);
+            predColor = AppColors.amber;
+          } else {
+            predText = l10n.inTargetRange;
+            predColor = AppColors.green2;
+          }
         }
 
         String? alertText;
-        if (cgm.alertMessage == 'crit_low') {
-          alertText = l10n.alertLowCrit(v.round());
-        } else if (cgm.alertMessage == 'low') {
-          alertText = l10n.alertLow(v.round());
-        } else if (cgm.alertMessage == 'crit_high') {
-          alertText = l10n.alertHighCrit(v.round());
-        } else if (cgm.alertMessage == 'high') {
-          alertText = l10n.alertHigh(v.round());
+        if (hasData) {
+          if (cgm.alertMessage == 'crit_low') {
+            alertText = l10n.alertLowCrit(v.round());
+          } else if (cgm.alertMessage == 'low') {
+            alertText = l10n.alertLow(v.round());
+          } else if (cgm.alertMessage == 'crit_high') {
+            alertText = l10n.alertHighCrit(v.round());
+          } else if (cgm.alertMessage == 'high') {
+            alertText = l10n.alertHigh(v.round());
+          }
         }
 
         final mins = cgm.minutesSinceLastReading;
-        final agoText = cgm.timeAgoText(mins, l10n.justNowNfc, l10n.minutesAgo(mins));
+        final agoText = hasData
+            ? cgm.timeAgoText(mins, l10n.justNowNfc, l10n.minutesAgo(mins))
+            : l10n.waitingForSensor;
         final valueSize = compact ? 52.0 : 64.0;
 
         return Column(
@@ -84,7 +94,7 @@ class HomeScreen extends StatelessWidget {
                         Text(agoText, style: const TextStyle(color: AppColors.text3, fontSize: 11)),
                         const SizedBox(height: 2),
                         Text(
-                          '$deltaSign${delta.toStringAsFixed(1)} ${l10n.mgdl}',
+                          hasData ? '$deltaSign${delta.toStringAsFixed(1)} ${l10n.mgdl}' : '',
                           style: const TextStyle(
                             color: Color(0xFFFF6B6B),
                             fontSize: 12,
@@ -105,7 +115,7 @@ class HomeScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        cgm.displayValue(v),
+                        hasData ? cgm.displayValue(v) : '--',
                         style: TextStyle(
                           fontSize: valueSize,
                           fontWeight: FontWeight.w700,
@@ -117,7 +127,7 @@ class HomeScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(top: 4),
                         child: Text(
-                          cgm.trend.symbol,
+                          hasData ? cgm.trend.symbol : '',
                           style: TextStyle(fontSize: valueSize * 0.45, color: textColor),
                         ),
                       ),

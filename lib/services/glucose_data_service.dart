@@ -16,40 +16,22 @@ class GlucoseDataService {
   final _readingsController = StreamController<List<GlucoseReading>>.broadcast();
   List<GlucoseReading> _readings = [];
   Timer? _liveTimer;
-  double _currentValue = 163;
-  bool _simulationEnabled = true;
+  double _currentValue = 0;
+  bool _simulationEnabled = false;
 
   Stream<List<GlucoseReading>> get readingsStream => _readingsController.stream;
   List<GlucoseReading> get readings => List.unmodifiable(_readings);
   double get currentValue => _currentValue;
+  bool get hasReadings => _readings.isNotEmpty;
   GlucoseReading? get latest => _readings.isEmpty ? null : _readings.last;
 
   Future<void> initialize() async {
     await _loadFromStorage();
-    if (_readings.isEmpty) {
-      _generateHistory();
-    } else {
+    if (_readings.isNotEmpty) {
       _currentValue = _readings.last.valueMgDl;
     }
     _notify();
-    _startLiveUpdates();
-  }
-
-  void _generateHistory() {
-    final now = DateTime.now();
-    _readings = [];
-    var v = 185.0;
-    final rng = Random(42);
-    for (var i = maxReadings - 1; i >= 0; i--) {
-      v += (rng.nextDouble() - 0.47) * 14;
-      v = v.clamp(52, 240);
-      _readings.add(GlucoseReading(
-        timestamp: now.subtract(Duration(milliseconds: i * intervalMs)),
-        valueMgDl: v.roundToDouble(),
-        source: ReadingSource.simulated,
-      ));
-    }
-    _currentValue = _readings.last.valueMgDl;
+    if (_simulationEnabled) _startLiveUpdates();
   }
 
   void setSimulationEnabled(bool enabled) {

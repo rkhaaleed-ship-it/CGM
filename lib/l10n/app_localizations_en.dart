@@ -21,10 +21,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
-  String get nfcReading => 'NFC Reading';
+  String get nfcReading => 'NFC Scan';
 
   @override
-  String get tapToRead => 'Tap to Read';
+  String get waitingForSensor => 'Waiting for sensor…';
+
+  @override
+  String get autoScanHint => 'Hold phone on sensor — auto scan';
 
   @override
   String get searching => 'Searching...';
@@ -34,10 +37,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get placePhoneHint =>
-      'Place the back of your phone\ndirectly over the sensor';
-
-  @override
-  String get libreCompat => 'Libre 1 / Libre 2 (with patch)';
+      'Place the back of your phone on the Libre 2+ sensor';
 
   @override
   String get sendToHome => 'Send to Home';
@@ -56,31 +56,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sensorRemaining => 'Sensor remaining';
-
-  @override
-  String get systemRequirements => 'System Requirements:';
-
-  @override
-  String get reqAndroid => '• Android 8.0+ with NFC enabled';
-
-  @override
-  String get reqIos => '• iOS 14+ with Core NFC';
-
-  @override
-  String get reqLibre1 => '• Libre 1: Direct reading ✓';
-
-  @override
-  String get reqLibre2 => '• Libre 2: Requires xDrip patch ✓';
-
-  @override
-  String get reqPermission => '• Grant NFC permission in settings';
-
-  @override
-  String get medicalWarningTitle => '⚠ Medical Notice:';
-
-  @override
-  String get medicalWarningBody =>
-      'This app is for supportive monitoring only.\nDo not rely on it for treatment decisions.\nAlways consult your doctor.';
 
   @override
   String minutesAgo(int count) {
@@ -185,10 +160,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notEnabled => 'Not enabled';
 
   @override
-  String get directNfc => 'Direct NFC';
+  String get directNfc => 'NFC + BLE';
 
   @override
-  String get libre1Only => 'Libre 1 only';
+  String get nfcDirectSub => 'Libre 2+';
 
   @override
   String get alertLimits => 'Alert Limits';
@@ -332,9 +307,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unit => 'Unit';
 
   @override
-  String get demoMode => 'Demo mode (no sensor)';
-
-  @override
   String get scanningBle => 'Scanning Bluetooth...';
 
   @override
@@ -343,4 +315,38 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get sensorNotActive =>
       'Sensor not active — activate with Libre app first';
+
+  @override
+  String get sensorWarmingUp =>
+      'Sensor warming up — wait until ready (≈60 min for 2+)';
+
+  @override
+  String get oop2Required => 'Install OOP2 app';
+
+  @override
+  String get systemReadiness => 'System check';
+
+  @override
+  String get checkPlatformOk => 'Android device OK';
+
+  @override
+  String get checkPlatform => 'Libre 2+ requires Android phone';
+
+  @override
+  String get checkOop2Ok => 'OOP2 decoder installed';
+
+  @override
+  String get checkOop2Missing => 'OOP2 not installed — required for Libre 2+';
+
+  @override
+  String get checkNfcOk => 'NFC available';
+
+  @override
+  String get checkNfcMissing => 'NFC unavailable — enable in settings';
+
+  @override
+  String get checkBleOk => 'Bluetooth ready';
+
+  @override
+  String get refreshChecks => 'Refresh';
 }

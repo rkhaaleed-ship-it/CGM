@@ -9,14 +9,18 @@ import '../models/alert_settings.dart';
 import '../models/glucose_reading.dart';
 import '../models/glucose_trend.dart';
 import '../models/libre_read_result.dart';
+import '../models/libre_sensor_type.dart';
 import '../models/sensor_info.dart';
 import '../services/bluetooth_sensor_service.dart';
 import '../services/glucose_data_service.dart' show ApiBroadcastService, GlucoseDataService;
 import '../services/libre_nfc_reader.dart';
 import '../services/nfc_sensor_service.dart';
 import '../services/settings_service.dart';
+import '../services/system_health_service.dart';
 
 enum NfcScanState { idle, scanning, success, error }
+
+const int _nfcTabIndex = 1;
 
 /// Central app state — orchestrates all CGM services (OOP composition).
 class CgmProvider extends ChangeNotifier {
@@ -53,9 +57,12 @@ class CgmProvider extends ChangeNotifier {
   double _nfcProgress = 0;
   bool _fromNfcJustNow = false;
   bool _realSensorActive = false;
+  List<SystemCheck> _systemChecks = [];
   final int _heartRate = 87;
   StreamSubscription<GlucoseReading>? _bleSub;
   StreamSubscription<GlucoseReading>? _nfcSub;
+  bool _autoNfcEnabled = false;
+  bool _nfcLoopRunning = false;
 
   List<GlucoseReading> get readings => _glucose.readings;
   double get currentValue => _glucose.currentValue;
@@ -74,6 +81,9 @@ class CgmProvider extends ChangeNotifier {
   double get nfcProgress => _nfcProgress;
   bool get fromNfcJustNow => _fromNfcJustNow;
   bool get realSensorActive => _realSensorActive;
+  List<SystemCheck> get systemChecks => _systemChecks;
+  bool get isSystemReady =>
+      _systemChecks.every((c) => c.status != SystemCheckStatus.error);
   int get heartRate => _heartRate;
   GlucoseDataService get glucoseService => _glucose;
   ApiBroadcastService get apiService => _api;
@@ -96,6 +106,7 @@ class CgmProvider extends ChangeNotifier {
     _api.nightscoutUrl = await _settings.loadNightscoutUrl();
 
     await _requestPermissions();
+    await refreshSystemChecks();
     await _glucose.initialize();
     _updateAlert();
     _glucose.readingsStream.listen((_) {
@@ -115,6 +126,11 @@ class CgmProvider extends ChangeNotifier {
       notifyListeners();
     });
 
+    notifyListeners();
+  }
+
+  Future<void> refreshSystemChecks() async {
+    _systemChecks = await SystemHealthService.runChecks();
     notifyListeners();
   }
 
@@ -167,6 +183,11 @@ class CgmProvider extends ChangeNotifier {
 
   void setTab(int index) {
     _activeTab = index;
+    if (index == _nfcTabIndex) {
+      unawaited(enableAutoNfcScan());
+    } else {
+      unawaited(disableAutoNfcScan());
+    }
     notifyListeners();
   }
 
@@ -198,14 +219,61 @@ class CgmProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Real Libre NFC scan via ISO15693 (NfcV).
-  Future<void> startNfcScan() async {
-    if (_nfcState == NfcScanState.scanning) return;
+  /// Starts continuous NFC listening while the NFC tab is open.
+  Future<void> enableAutoNfcScan() async {
+    if (kIsWeb || _autoNfcEnabled) return;
+    _autoNfcEnabled = true;
+    if (!_nfcLoopRunning) {
+      unawaited(_nfcAutoScanLoop());
+    }
+  }
 
+  Future<void> disableAutoNfcScan() async {
+    _autoNfcEnabled = false;
+    try {
+      await NfcManager.instance.stopSession();
+    } catch (_) {}
+  }
+
+  Future<void> _nfcAutoScanLoop() async {
+    _nfcLoopRunning = true;
+    while (_autoNfcEnabled) {
+      if (_nfcState == NfcScanState.success) {
+        await Future<void>.delayed(const Duration(seconds: 6));
+        if (!_autoNfcEnabled) break;
+      }
+
+      await _runOneNfcSession();
+
+      if (!_autoNfcEnabled) break;
+
+      if (_nfcState == NfcScanState.error) {
+        await Future<void>.delayed(const Duration(seconds: 2));
+        if (_autoNfcEnabled) {
+          _nfcErrorMessage = null;
+          notifyListeners();
+        }
+      }
+    }
+    _nfcLoopRunning = false;
+  }
+
+  /// Manual restart (e.g. "Read again" button).
+  Future<void> startNfcScan() async {
+    if (_autoNfcEnabled) {
+      resetNfcState();
+      return;
+    }
+    await _runOneNfcSession();
+  }
+
+  Future<void> _runOneNfcSession() async {
     _nfcState = NfcScanState.scanning;
     _nfcProgress = 0;
-    _lastNfcReading = null;
-    _lastLibreResult = null;
+    if (_nfcState != NfcScanState.success) {
+      _lastNfcReading = null;
+      _lastLibreResult = null;
+    }
     _nfcErrorMessage = null;
     notifyListeners();
 
@@ -220,8 +288,8 @@ class CgmProvider extends ChangeNotifier {
     var completed = false;
     Timer? progressTimer;
     progressTimer = Timer.periodic(const Duration(milliseconds: 80), (_) {
-      if (!completed) {
-        _nfcProgress = (_nfcProgress + 0.03).clamp(0.0, 0.92);
+      if (!completed && _nfcState == NfcScanState.scanning) {
+        _nfcProgress = (_nfcProgress + 0.015).clamp(0.0, 0.95);
         notifyListeners();
       }
     });
@@ -245,9 +313,30 @@ class CgmProvider extends ChangeNotifier {
               _nfcProgress = 1.0;
               _nfcState = NfcScanState.success;
               _applySensorResult(result);
+              sendNfcToHome();
+              if (result.patchUid.isNotEmpty) {
+                unawaited(_ble.configureLibreSensor(
+                  patchUid: result.patchUid,
+                  patchInfo: result.patchInfo,
+                  deviceName: result.bleDeviceName,
+                  bleMac: result.bleMac,
+                  btUnlockPayload: result.btUnlockPayload,
+                ));
+              }
+            } else if (result != null && result.isWarmingUp) {
+              _nfcState = NfcScanState.error;
+              _nfcErrorMessage = 'sensorWarmingUp';
+              _sensor = _sensor.copyWith(
+                name: result.sensorType,
+                model: 'Libre 2+',
+                isConnected: false,
+              );
+            } else if (result != null && result.isInactive) {
+              _nfcState = NfcScanState.error;
+              _nfcErrorMessage = 'sensorNotActive';
             } else {
               _nfcState = NfcScanState.error;
-              _nfcErrorMessage = result == null ? 'scanFailed' : 'sensorNotActive';
+              _nfcErrorMessage = result == null ? 'scanFailed' : 'oop2Required';
             }
             notifyListeners();
             await NfcManager.instance.stopSession();
@@ -262,19 +351,24 @@ class CgmProvider extends ChangeNotifier {
         },
       );
 
-      await Future<void>.delayed(const Duration(seconds: 20));
+      // Keep listening until tag found or user leaves NFC tab.
+      while (!completed && _autoNfcEnabled) {
+        await Future<void>.delayed(const Duration(milliseconds: 500));
+      }
+
       if (!completed) {
         progressTimer.cancel();
         await NfcManager.instance.stopSession();
-        _nfcState = NfcScanState.error;
-        _nfcErrorMessage = 'scanTimeout';
-        notifyListeners();
+      } else if (!_autoNfcEnabled) {
+        progressTimer.cancel();
       }
     } catch (e) {
       progressTimer.cancel();
-      _nfcState = NfcScanState.error;
-      _nfcErrorMessage = 'scanFailed';
-      notifyListeners();
+      if (_autoNfcEnabled) {
+        _nfcState = NfcScanState.error;
+        _nfcErrorMessage = 'scanFailed';
+        notifyListeners();
+      }
     }
   }
 
@@ -286,26 +380,21 @@ class CgmProvider extends ChangeNotifier {
     }
     _sensor = _sensor.copyWith(
       name: result.sensorType,
-      model: 'Libre 2+',
+      model: result.libreSensorType == LibreSensorType.libre2Plus
+          ? 'Libre 2+'
+          : result.libreSensorType.displayName,
       isConnected: true,
       activatedAt: DateTime.now().subtract(Duration(minutes: result.sensorAgeMinutes)),
       signalStrength: 4,
+      bleConnected: result.bleDeviceName != null,
     );
   }
 
   void sendNfcToHome() {
     if (_lastNfcReading == null) return;
-    if (_lastLibreResult != null) {
-      for (final r in _lastLibreResult!.history) {
-        _glucose.addReading(r);
-      }
-    } else {
-      _glucose.addReading(_lastNfcReading!);
-    }
     _fromNfcJustNow = true;
     _maybeBroadcast(_lastNfcReading);
-    _activeTab = 0;
-    notifyListeners();
+    setTab(0);
     Future<void>.delayed(const Duration(seconds: 30), () {
       _fromNfcJustNow = false;
       notifyListeners();
@@ -313,7 +402,7 @@ class CgmProvider extends ChangeNotifier {
   }
 
   void resetNfcState() {
-    _nfcState = NfcScanState.idle;
+    _nfcState = NfcScanState.scanning;
     _nfcProgress = 0;
     _lastNfcReading = null;
     _lastLibreResult = null;
@@ -335,6 +424,7 @@ class CgmProvider extends ChangeNotifier {
 
   @override
   void dispose() {
+    unawaited(disableAutoNfcScan());
     _bleSub?.cancel();
     _nfcSub?.cancel();
     _glucose.dispose();

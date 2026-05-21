@@ -9,8 +9,8 @@ class SensorInfo {
   final bool bleConnected;
 
   const SensorInfo({
-    this.name = 'FreeStyle Libre 2',
-    this.model = 'Libre 2',
+    this.name = 'FreeStyle Libre 2+',
+    this.model = 'Libre 2+',
     this.isConnected = true,
     this.activatedAt,
     this.lifeDays = 14,

@@ -7,7 +7,6 @@ import 'l10n/app_localizations.dart';
 import 'providers/cgm_provider.dart';
 import 'screens/home_screen.dart';
 import 'screens/nfc_screen.dart';
-import 'screens/settings_screen.dart';
 import 'theme/app_theme.dart';
 import 'widgets/bottom_nav_tabs.dart';
 
@@ -54,7 +53,7 @@ class CgmMonitorApp extends StatelessWidget {
 class MainShell extends StatelessWidget {
   const MainShell({super.key});
 
-  static const _screens = [HomeScreen(), NfcScreen(), SettingsScreen()];
+  static const _screens = [HomeScreen(), NfcScreen()];
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +69,7 @@ class MainShell extends StatelessWidget {
       bottomNavigationBar: BottomNavTabs(
         currentIndex: cgm.activeTab,
         onTap: cgm.setTab,
-        labels: [l10n.home, l10n.nfc, l10n.settings],
+        labels: [l10n.home, l10n.nfc],
       ),
     );
   }

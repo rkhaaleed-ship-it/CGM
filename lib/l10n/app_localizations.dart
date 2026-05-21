@@ -125,14 +125,20 @@ abstract class AppLocalizations {
   /// No description provided for @nfcReading.
   ///
   /// In en, this message translates to:
-  /// **'NFC Reading'**
+  /// **'NFC Scan'**
   String get nfcReading;
 
-  /// No description provided for @tapToRead.
+  /// No description provided for @waitingForSensor.
   ///
   /// In en, this message translates to:
-  /// **'Tap to Read'**
-  String get tapToRead;
+  /// **'Waiting for sensor…'**
+  String get waitingForSensor;
+
+  /// No description provided for @autoScanHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold phone on sensor — auto scan'**
+  String get autoScanHint;
 
   /// No description provided for @searching.
   ///
@@ -149,14 +155,8 @@ abstract class AppLocalizations {
   /// No description provided for @placePhoneHint.
   ///
   /// In en, this message translates to:
-  /// **'Place the back of your phone\ndirectly over the sensor'**
+  /// **'Place the back of your phone on the Libre 2+ sensor'**
   String get placePhoneHint;
-
-  /// No description provided for @libreCompat.
-  ///
-  /// In en, this message translates to:
-  /// **'Libre 1 / Libre 2 (with patch)'**
-  String get libreCompat;
 
   /// No description provided for @sendToHome.
   ///
@@ -193,54 +193,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sensor remaining'**
   String get sensorRemaining;
-
-  /// No description provided for @systemRequirements.
-  ///
-  /// In en, this message translates to:
-  /// **'System Requirements:'**
-  String get systemRequirements;
-
-  /// No description provided for @reqAndroid.
-  ///
-  /// In en, this message translates to:
-  /// **'• Android 8.0+ with NFC enabled'**
-  String get reqAndroid;
-
-  /// No description provided for @reqIos.
-  ///
-  /// In en, this message translates to:
-  /// **'• iOS 14+ with Core NFC'**
-  String get reqIos;
-
-  /// No description provided for @reqLibre1.
-  ///
-  /// In en, this message translates to:
-  /// **'• Libre 1: Direct reading ✓'**
-  String get reqLibre1;
-
-  /// No description provided for @reqLibre2.
-  ///
-  /// In en, this message translates to:
-  /// **'• Libre 2: Requires xDrip patch ✓'**
-  String get reqLibre2;
-
-  /// No description provided for @reqPermission.
-  ///
-  /// In en, this message translates to:
-  /// **'• Grant NFC permission in settings'**
-  String get reqPermission;
-
-  /// No description provided for @medicalWarningTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'⚠ Medical Notice:'**
-  String get medicalWarningTitle;
-
-  /// No description provided for @medicalWarningBody.
-  ///
-  /// In en, this message translates to:
-  /// **'This app is for supportive monitoring only.\nDo not rely on it for treatment decisions.\nAlways consult your doctor.'**
-  String get medicalWarningBody;
 
   /// No description provided for @minutesAgo.
   ///
@@ -437,14 +389,14 @@ abstract class AppLocalizations {
   /// No description provided for @directNfc.
   ///
   /// In en, this message translates to:
-  /// **'Direct NFC'**
+  /// **'NFC + BLE'**
   String get directNfc;
 
-  /// No description provided for @libre1Only.
+  /// No description provided for @nfcDirectSub.
   ///
   /// In en, this message translates to:
-  /// **'Libre 1 only'**
-  String get libre1Only;
+  /// **'Libre 2+'**
+  String get nfcDirectSub;
 
   /// No description provided for @alertLimits.
   ///
@@ -704,12 +656,6 @@ abstract class AppLocalizations {
   /// **'Unit'**
   String get unit;
 
-  /// No description provided for @demoMode.
-  ///
-  /// In en, this message translates to:
-  /// **'Demo mode (no sensor)'**
-  String get demoMode;
-
   /// No description provided for @scanningBle.
   ///
   /// In en, this message translates to:
@@ -727,6 +673,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sensor not active — activate with Libre app first'**
   String get sensorNotActive;
+
+  /// No description provided for @sensorWarmingUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensor warming up — wait until ready (≈60 min for 2+)'**
+  String get sensorWarmingUp;
+
+  /// No description provided for @oop2Required.
+  ///
+  /// In en, this message translates to:
+  /// **'Install OOP2 app'**
+  String get oop2Required;
+
+  /// No description provided for @systemReadiness.
+  ///
+  /// In en, this message translates to:
+  /// **'System check'**
+  String get systemReadiness;
+
+  /// No description provided for @checkPlatformOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Android device OK'**
+  String get checkPlatformOk;
+
+  /// No description provided for @checkPlatform.
+  ///
+  /// In en, this message translates to:
+  /// **'Libre 2+ requires Android phone'**
+  String get checkPlatform;
+
+  /// No description provided for @checkOop2Ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OOP2 decoder installed'**
+  String get checkOop2Ok;
+
+  /// No description provided for @checkOop2Missing.
+  ///
+  /// In en, this message translates to:
+  /// **'OOP2 not installed — required for Libre 2+'**
+  String get checkOop2Missing;
+
+  /// No description provided for @checkNfcOk.
+  ///
+  /// In en, this message translates to:
+  /// **'NFC available'**
+  String get checkNfcOk;
+
+  /// No description provided for @checkNfcMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'NFC unavailable — enable in settings'**
+  String get checkNfcMissing;
+
+  /// No description provided for @checkBleOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth ready'**
+  String get checkBleOk;
+
+  /// No description provided for @refreshChecks.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get refreshChecks;
 }
 
 class _AppLocalizationsDelegate

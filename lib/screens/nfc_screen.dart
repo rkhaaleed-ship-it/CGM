@@ -17,6 +17,8 @@ class NfcScreen extends StatelessWidget {
       'nfcDisabled' => l10n.nfcDisabled,
       'scanTimeout' => l10n.scanTimeout,
       'sensorNotActive' => l10n.sensorNotActive,
+      'sensorWarmingUp' => l10n.sensorWarmingUp,
+      'oop2Required' => l10n.oop2Required,
       _ => l10n.scanFailed,
     };
   }
@@ -43,7 +45,7 @@ class NfcScreen extends StatelessWidget {
             ringLabel = _nfcErrorLabel(l10n, cgm.nfcErrorMessage);
             ringBorder = AppColors.amber;
           case NfcScanState.idle:
-            ringLabel = l10n.tapToRead;
+            ringLabel = l10n.waitingForSensor;
             ringBorder = AppColors.border2;
         }
 
@@ -73,30 +75,27 @@ class NfcScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     const SizedBox(height: 8),
-                    GestureDetector(
-                      onTap: state != NfcScanState.scanning ? cgm.startNfcScan : null,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        width: 170,
-                        height: 170,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: ringBorder, width: 3),
-                          boxShadow: state == NfcScanState.scanning
-                              ? [BoxShadow(color: AppColors.red.withValues(alpha: 0.4), blurRadius: 16, spreadRadius: 2)]
-                              : null,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Transform.rotate(
-                              angle: 1.5708,
-                              child: const Icon(Icons.sensors, size: 52, color: AppColors.red),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(ringLabel, style: const TextStyle(color: AppColors.text2, fontSize: 13)),
-                          ],
-                        ),
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      width: 170,
+                      height: 170,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: ringBorder, width: 3),
+                        boxShadow: state == NfcScanState.scanning
+                            ? [BoxShadow(color: AppColors.red.withValues(alpha: 0.4), blurRadius: 16, spreadRadius: 2)]
+                            : null,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Transform.rotate(
+                            angle: 1.5708,
+                            child: const Icon(Icons.sensors, size: 52, color: AppColors.red),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(ringLabel, textAlign: TextAlign.center, style: const TextStyle(color: AppColors.text2, fontSize: 13)),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -117,64 +116,10 @@ class NfcScreen extends StatelessWidget {
                       style: const TextStyle(color: AppColors.text3, fontSize: 12, height: 1.7),
                     ),
                     const SizedBox(height: 4),
-                    Text(l10n.libreCompat, style: const TextStyle(color: Color(0xFF333333), fontSize: 11)),
+                    Text(l10n.autoScanHint, style: const TextStyle(color: AppColors.green2, fontSize: 11)),
                     const SizedBox(height: 20),
-                    if (state == NfcScanState.success && reading != null) ...[
+                    if (state == NfcScanState.success && reading != null)
                       _NfcResultCard(cgm: cgm, reading: reading, last3: last3, avg24: avg24, rem: rem),
-                      const SizedBox(height: 14),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: cgm.sendNfcToHome,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.red,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                            ),
-                            child: Text(l10n.sendToHome),
-                          ),
-                          const SizedBox(width: 8),
-                          OutlinedButton(
-                            onPressed: () {
-                              cgm.resetNfcState();
-                              cgm.startNfcScan();
-                            },
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: AppColors.text2,
-                              side: const BorderSide(color: AppColors.border2),
-                              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                            ),
-                            child: Text(l10n.readAgain),
-                          ),
-                        ],
-                      ),
-                    ],
-                    const SizedBox(height: 20),
-                    _InfoBox(
-                      title: l10n.systemRequirements,
-                      lines: [l10n.reqAndroid, l10n.reqIos, l10n.reqLibre1, l10n.reqLibre2, l10n.reqPermission],
-                    ),
-                    const SizedBox(height: 12),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF1A0A0A),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: const Color(0xFF3A1111)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(l10n.medicalWarningTitle, style: const TextStyle(color: Color(0xFFCC4444), fontWeight: FontWeight.w500, fontSize: 11)),
-                          const SizedBox(height: 4),
-                          Text(l10n.medicalWarningBody, style: const TextStyle(color: Color(0xFF884444), fontSize: 11, height: 1.7)),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -279,33 +224,6 @@ class _InfoRow extends StatelessWidget {
         children: [
           Text(label, style: const TextStyle(color: AppColors.text3, fontSize: 11)),
           Text(value, style: const TextStyle(color: AppColors.text2, fontSize: 11)),
-        ],
-      ),
-    );
-  }
-}
-
-class _InfoBox extends StatelessWidget {
-  const _InfoBox({required this.title, required this.lines});
-  final String title;
-  final List<String> lines;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.bg3,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: const TextStyle(color: AppColors.text2, fontSize: 12)),
-          const SizedBox(height: 4),
-          ...lines.map((l) => Text(l, style: const TextStyle(color: AppColors.text3, fontSize: 12, height: 1.8))),
         ],
       ),
     );

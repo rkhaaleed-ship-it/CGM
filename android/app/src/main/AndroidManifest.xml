@@ -52,5 +52,10 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <!-- OOP2 decoder packages (Libre 2 / 2+) -->
+        <package android:name="com.hg4.oopalgorithm.oopalgorithm2" />
+        <package android:name="info.nightscout.deeplearning" />
+        <package android:name="com.hg4.oopalgorithm.oopalgorithm" />
+        <package android:name="org.andesite.lucky8" />
     </queries>
 </manifest>
