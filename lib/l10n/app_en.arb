@@ -1,0 +1,154 @@
+{
+  "@@locale": "en",
+  "appTitle": "CGM Monitor",
+  "home": "Home",
+  "nfc": "NFC",
+  "settings": "Settings",
+  "nfcReading": "NFC Reading",
+  "tapToRead": "Tap to Read",
+  "searching": "Searching...",
+  "readSuccess": "Read Successful",
+  "placePhoneHint": "Place the back of your phone\ndirectly over the sensor",
+  "libreCompat": "Libre 1 / Libre 2 (with patch)",
+  "sendToHome": "Send to Home",
+  "readAgain": "Read Again",
+  "nfcSuccessLabel": "✓ Successful NFC reading",
+  "avg24h": "Average (24h)",
+  "last3Readings": "Last 3 readings",
+  "sensorRemaining": "Sensor remaining",
+  "systemRequirements": "System Requirements:",
+  "reqAndroid": "• Android 8.0+ with NFC enabled",
+  "reqIos": "• iOS 14+ with Core NFC",
+  "reqLibre1": "• Libre 1: Direct reading ✓",
+  "reqLibre2": "• Libre 2: Requires xDrip patch ✓",
+  "reqPermission": "• Grant NFC permission in settings",
+  "medicalWarningTitle": "⚠ Medical Notice:",
+  "medicalWarningBody": "This app is for supportive monitoring only.\nDo not rely on it for treatment decisions.\nAlways consult your doctor.",
+  "minutesAgo": "{count} minutes ago",
+  "@minutesAgo": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "justNow": "Just now",
+  "justNowNfc": "Just now — from NFC 📡",
+  "expectedDropIn": "Expected drop in: {mins} min",
+  "@expectedDropIn": {
+    "placeholders": {
+      "mins": {"type": "int"}
+    }
+  },
+  "expectedRiseIn": "Expected rise in: {mins} min",
+  "@expectedRiseIn": {
+    "placeholders": {
+      "mins": {"type": "int"}
+    }
+  },
+  "inTargetRange": "In target range ✓",
+  "lowTrend": "Low ↓ below range",
+  "highTrend": "High ↑ above range",
+  "inTargetTrend": "In target range →",
+  "avg": "Avg",
+  "tir": "TIR%",
+  "high": "High",
+  "low": "Low",
+  "hours24": "24 hours",
+  "hour1": "1h",
+  "hour3": "3h",
+  "hour6": "6h",
+  "hour12": "12h",
+  "hour24": "24h",
+  "sensorStatus": "Sensor Status",
+  "connected": "Connected",
+  "disconnected": "Disconnected",
+  "remaining": "Remaining",
+  "lastReading": "Last reading",
+  "lastValue": "Last value",
+  "signalStrength": "Signal strength",
+  "excellent": "Excellent",
+  "dataSource": "Data Source",
+  "xdripApi": "xDrip+ API",
+  "nightscout": "Nightscout",
+  "backup": "Backup",
+  "notEnabled": "Not enabled",
+  "directNfc": "Direct NFC",
+  "libre1Only": "Libre 1 only",
+  "alertLimits": "Alert Limits",
+  "critLow": "Critical Low 🚨",
+  "lowAlert": "Low ⚠️",
+  "highAlert": "High ⚠️",
+  "critHigh": "Critical High 🚨",
+  "notifications": "Notifications",
+  "alertsEnabled": "Alerts enabled",
+  "soundVibrate": "Sound + vibration",
+  "nightMode": "Night mode",
+  "nightModeSub": "11pm – 7am quieter",
+  "rapidDrop": "Rapid drop",
+  "rapidDropSub": ">2 mg/dL/min",
+  "rapidRise": "Rapid rise",
+  "rapidRiseSub": ">2 mg/dL/min",
+  "sendToMainApp": "Send to Main App",
+  "xdripBroadcast": "xDrip Broadcast",
+  "autoSend": "Auto send",
+  "nightscoutUrl": "Nightscout URL",
+  "configure": "Configure",
+  "about": "About",
+  "version": "Version",
+  "versionSub": "CGM Companion v1.0.0",
+  "flutterFramework": "Flutter Framework",
+  "flutterSub": "Android + iOS",
+  "language": "Language",
+  "arabic": "العربية",
+  "english": "English",
+  "bluetooth": "Bluetooth",
+  "bluetoothScan": "Scan for sensor",
+  "bluetoothConnected": "BLE Connected",
+  "alertLowCrit": "Critical! Very low glucose: {val} mg/dL",
+  "@alertLowCrit": {
+    "placeholders": {
+      "val": {"type": "int"}
+    }
+  },
+  "alertLow": "Warning: Low glucose {val} mg/dL",
+  "@alertLow": {
+    "placeholders": {
+      "val": {"type": "int"}
+    }
+  },
+  "alertHighCrit": "Critical! Very high glucose: {val} mg/dL",
+  "@alertHighCrit": {
+    "placeholders": {
+      "val": {"type": "int"}
+    }
+  },
+  "alertHigh": "Warning: High glucose {val} mg/dL",
+  "@alertHigh": {
+    "placeholders": {
+      "val": {"type": "int"}
+    }
+  },
+  "daysHours": "{days} days {hours} hours",
+  "@daysHours": {
+    "placeholders": {
+      "days": {"type": "int"},
+      "hours": {"type": "int"}
+    }
+  },
+  "nowTime": "Now — {time}",
+  "@nowTime": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "nfcNotAvailable": "NFC is not available on this device",
+  "nfcDisabled": "Please enable NFC in settings",
+  "scanFailed": "Scan failed — try again",
+  "configureUrl": "Configure ›",
+  "mgdl": "mg/dL",
+  "mmoll": "mmol/L",
+  "unit": "Unit",
+  "demoMode": "Demo mode (no sensor)",
+  "scanningBle": "Scanning Bluetooth...",
+  "scanTimeout": "Scan timed out — hold phone on sensor longer",
+  "sensorNotActive": "Sensor not active — activate with Libre app first"
+}
